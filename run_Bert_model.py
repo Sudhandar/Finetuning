@@ -20,7 +20,7 @@ from models import BertModel
 def model_train_validate_test(train_df, dev_df, test_df, target_dir, 
          max_seq_len=50,
          epochs=30,
-         batch_size=32,
+         batch_size=8,
          lr=2e-05,
          patience=1,
          max_grad_norm=10.0,
