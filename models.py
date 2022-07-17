@@ -38,7 +38,7 @@ class BertModel(nn.Module):
     def __init__(self, requires_grad = True):
         super(BertModel, self).__init__()
         self.bert = BertForSequenceClassification.from_pretrained('bert-large-cased',num_labels = 3)
-        self.tokenizer = AutoTokenizer.from_pretrained('bert-large-cased', do_lower_case=True)
+        self.tokenizer = AutoTokenizer.from_pretrained('bert-large-cased', do_lower_case=False)
         self.requires_grad = requires_grad
         self.device = torch.device("cuda")
         for param in self.bert.parameters():
