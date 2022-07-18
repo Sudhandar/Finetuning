@@ -179,10 +179,20 @@ def model_train_validate_test(train_df, dev_df, test_df, target_dir,
             test_prediction['prediction'] = test_prediction.apply(lambda x: 0 if (x['prob_0'] > x['prob_1']) else 1, axis=1)
             test_prediction = test_prediction[['prob_0', 'prob_1', 'prediction']]
             test_prediction.to_csv(os.path.join(target_dir,"test_prediction.csv"), index=False)
+
+        # run model on test set and save the prediction result to csv
+        print("* Test for epoch {}:".format(epoch))
+        _, _, test_accuracy, all_prob = validate(model, test_loader)
+        print("Test accuracy: {:.4f}%\n".format(test_accuracy))
+        test_prediction = pd.DataFrame({'prob_1':all_prob})
+        test_prediction['prob_0'] = 1-test_prediction['prob_1']
+        test_prediction['prediction'] = test_prediction.apply(lambda x: 0 if (x['prob_0'] > x['prob_1']) else 1, axis=1)
+        test_prediction = test_prediction[['prob_0', 'prob_1', 'prediction']]
+        test_prediction.to_csv(os.path.join(target_dir,"test_prediction.csv"), index=False)
              
-        if patience_counter >= patience:
-            print("-> Early stopping: patience limit reached, stopping...")
-            break
+        # if patience_counter >= patience:
+        #     print("-> Early stopping: patience limit reached, stopping...")
+        #     break
 
 
 def model_load_test(test_df, target_dir, test_prediction_dir, test_prediction_name, max_seq_len=50, batch_size=8):
@@ -244,4 +254,4 @@ if __name__ == "__main__":
     test_df = test_df[['label','sentence']]
     test_df.columns = ['similarity','s1']
     target_dir = "./data/financial_phrasebank/output/Bert/"
-    model_train_validate_test(train_df, dev_df, test_df, target_dir, max_seq_len=256)
+    model_train_validate_test(train_df, dev_df, test_df, target_dir, batch_size = 8, epochs =30,max_seq_len=256)
