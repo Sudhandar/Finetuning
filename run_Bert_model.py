@@ -21,9 +21,9 @@ def model_train_validate_test(train_df, dev_df, test_df, target_dir,
          max_seq_len=50,
          epochs=30,
          batch_size=4,
-         lr=2e-05,
+         lr=5e-05,
          patience=5,
-         max_grad_norm=10.0,
+         max_grad_norm=1.0,
          if_save_model=True,
          checkpoint=None):
     """
@@ -254,4 +254,4 @@ if __name__ == "__main__":
     test_df = test_df[['label','sentence']]
     test_df.columns = ['similarity','s1']
     target_dir = "./data/financial_phrasebank/output/Bert/"
-    model_train_validate_test(train_df, dev_df, test_df, target_dir, batch_size = 8, epochs =30,max_seq_len=256)
+    model_train_validate_test(train_df, dev_df, test_df, target_dir, batch_size = 4, epochs =30,max_seq_len=256)
