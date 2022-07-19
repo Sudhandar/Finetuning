@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Oct 25 00:24:07 2020
-
-@author: Jiang Yuxin
-"""
-
 import torch
 import torch.nn as nn
 import time

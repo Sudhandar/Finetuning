@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Oct 25 00:19:30 2020
-
-@author: Jiang Yuxin
-"""
 import os
 import pandas as pd
 import torch
@@ -228,9 +222,16 @@ def model_load_test(test_df, target_dir, test_prediction_dir, test_prediction_na
 
 
 if __name__ == "__main__":
-    data_path = "/content/drive/My Drive/SST-2-sentiment-analysis/data/"
-    train_df = pd.read_csv(os.path.join(data_path,"train.tsv"),sep='\t',header=None, names=['similarity','s1'])
-    dev_df = pd.read_csv(os.path.join(data_path,"dev.tsv"),sep='\t',header=None, names=['similarity','s1'])
-    test_df = pd.read_csv(os.path.join(data_path,"test.tsv"),sep='\t',header=None, names=['similarity','s1'])
-    target_dir = "/content/drive/My Drive/SST-2-sentiment-analysis/output/Roberta/"
+    data_path = "./data/kaggle_tweets/"
+    train_df = pd.read_csv(os.path.join(data_path,"train.csv"))
+    print(train_df.head())
+    train_df = train_df[['label','sentence']]
+    train_df.columns = ['similarity','s1']
+    dev_df = pd.read_csv(os.path.join(data_path,"dev.csv"))
+    dev_df = dev_df[['label','sentence']]
+    dev_df.columns = ['similarity','s1']
+    test_df = pd.read_csv(os.path.join(data_path,"test.csv"))
+    test_df = test_df[['label','sentence']]
+    test_df.columns = ['similarity','s1']
+    target_dir = "./data/kaggle_tweets//output/Roberta/"
     model_train_validate_test(train_df, dev_df, test_df, target_dir)

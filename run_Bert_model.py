@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Oct 25 00:19:30 2020
-
-@author: Jiang Yuxin
-"""
-
 import os
 import pandas as pd
 import torch
@@ -242,7 +235,7 @@ def model_load_test(test_df, target_dir, test_prediction_dir, test_prediction_na
 
 if __name__ == "__main__":
     torch.cuda.empty_cache()
-    data_path = "./data/fiqa/"
+    data_path = "./data/kaggle_tweets/"
     train_df = pd.read_csv(os.path.join(data_path,"train.csv"))
     print(train_df.head())
     train_df = train_df[['label','sentence']]
@@ -253,5 +246,5 @@ if __name__ == "__main__":
     test_df = pd.read_csv(os.path.join(data_path,"test.csv"))
     test_df = test_df[['label','sentence']]
     test_df.columns = ['similarity','s1']
-    target_dir = "./data/fiqa/output/Bert/"
+    target_dir = "./data/kaggle_tweets/output/Bert/"
     model_train_validate_test(train_df, dev_df, test_df, target_dir, batch_size = 4, epochs =30,max_seq_len=64)
