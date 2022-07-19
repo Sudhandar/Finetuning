@@ -21,9 +21,9 @@ def model_train_validate_test(train_df, dev_df, test_df, target_dir,
          max_seq_len=50,
          epochs=30,
          batch_size=4,
-         lr=5e-05,
+         lr=2e-05,
          patience=5,
-         max_grad_norm=1.0,
+         max_grad_norm=10.0,
          if_save_model=True,
          checkpoint=None):
     """
@@ -242,16 +242,16 @@ def model_load_test(test_df, target_dir, test_prediction_dir, test_prediction_na
 
 if __name__ == "__main__":
     torch.cuda.empty_cache()
-    data_path = "./data/financial_phrasebank/"
-    train_df = pd.read_csv(os.path.join(data_path,"alltrain.csv"))
+    data_path = "./data/fiqa/"
+    train_df = pd.read_csv(os.path.join(data_path,"train.csv"))
     print(train_df.head())
     train_df = train_df[['label','sentence']]
     train_df.columns = ['similarity','s1']
-    dev_df = pd.read_csv(os.path.join(data_path,"allvalid.csv"))
+    dev_df = pd.read_csv(os.path.join(data_path,"dev.csv"))
     dev_df = dev_df[['label','sentence']]
     dev_df.columns = ['similarity','s1']
-    test_df = pd.read_csv(os.path.join(data_path,"alltest.csv"))
+    test_df = pd.read_csv(os.path.join(data_path,"test.csv"))
     test_df = test_df[['label','sentence']]
     test_df.columns = ['similarity','s1']
-    target_dir = "./data/financial_phrasebank/output/Bert/"
-    model_train_validate_test(train_df, dev_df, test_df, target_dir, batch_size = 4, epochs =30,max_seq_len=256)
+    target_dir = "./data/fiqa/output/Bert/"
+    model_train_validate_test(train_df, dev_df, test_df, target_dir, batch_size = 4, epochs =30,max_seq_len=64)
