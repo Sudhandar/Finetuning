@@ -11,12 +11,12 @@ from utils import train, validate, test
 from models import RobertModel
 
 def model_train_validate_test(train_df, dev_df, test_df, target_dir, 
-         max_seq_len=50,
-         epochs=3,
+         max_seq_len=128,
+         epochs=10,
          batch_size=32,
-         lr=2e-05,
-         patience=1,
-         max_grad_norm=10.0,
+         lr=2e-06,
+         patience=5,
+         max_grad_norm=1.0,
          if_save_model=True,
          checkpoint=None):
     """
@@ -113,8 +113,8 @@ def model_train_validate_test(train_df, dev_df, test_df, target_dir,
         valid_accuracy = checkpoint["valid_accuracy"]
         valid_auc = checkpoint["valid_auc"]
      # Compute loss and accuracy before starting (or resuming) training.
-    _, valid_loss, valid_accuracy, auc, _, = validate(model, dev_loader)
-    print("\n* Validation loss before training: {:.4f}, accuracy: {:.4f}%, auc: {:.4f}".format(valid_loss, (valid_accuracy*100), auc))
+    _, valid_loss, valid_accuracy, _ = validate(model, dev_loader)
+    print("\n* Validation loss before training: {:.4f}, accuracy: {:.4f}%".format(valid_loss, (valid_accuracy*100)))
     
     # -------------------- Training epochs -----------------------------------#
     
@@ -130,12 +130,11 @@ def model_train_validate_test(train_df, dev_df, test_df, target_dir,
         print("-> Training time: {:.4f}s, loss = {:.4f}, accuracy: {:.4f}%".format(epoch_time, epoch_loss, (epoch_accuracy*100)))
         
         print("* Validation for epoch {}:".format(epoch))
-        epoch_time, epoch_loss, epoch_accuracy , epoch_auc, _, = validate(model, dev_loader)
+        epoch_time, epoch_loss, epoch_accuracy, _ = validate(model, dev_loader)
         valid_losses.append(epoch_loss)
         valid_accuracies.append(epoch_accuracy)
-        valid_aucs.append(epoch_auc)
-        print("-> Valid. time: {:.4f}s, loss: {:.4f}, accuracy: {:.4f}%, auc: {:.4f}\n"
-              .format(epoch_time, epoch_loss, (epoch_accuracy*100), epoch_auc))
+        print("-> Valid. time: {:.4f}s, loss: {:.4f}, accuracy: {:.4f}%"
+              .format(epoch_time, epoch_loss, (epoch_accuracy*100)))
         
         # Update the optimizer's learning rate with the scheduler.
         scheduler.step(epoch_accuracy)
@@ -164,7 +163,7 @@ def model_train_validate_test(train_df, dev_df, test_df, target_dir,
             
             # run model on test set and save the prediction result to csv
             print("* Test for epoch {}:".format(epoch))
-            _, _, test_accuracy, _, all_prob = validate(model, test_loader)
+            _, _, test_accuracy, all_prob = validate(model, test_loader)
             print("Test accuracy: {:.4f}%\n".format(test_accuracy))
             test_prediction = pd.DataFrame({'prob_1':all_prob})
             test_prediction['prob_0'] = 1-test_prediction['prob_1']
@@ -222,16 +221,16 @@ def model_load_test(test_df, target_dir, test_prediction_dir, test_prediction_na
 
 
 if __name__ == "__main__":
-    data_path = "./data/kaggle_tweets/"
-    train_df = pd.read_csv(os.path.join(data_path,"train.csv"))
+    data_path = "./data/financial_phrasebank/"
+    train_df = pd.read_csv(os.path.join(data_path,"combined_train.csv"))
     print(train_df.head())
     train_df = train_df[['label','sentence']]
     train_df.columns = ['similarity','s1']
-    dev_df = pd.read_csv(os.path.join(data_path,"dev.csv"))
+    dev_df = pd.read_csv(os.path.join(data_path,"combined_dev.csv"))
     dev_df = dev_df[['label','sentence']]
     dev_df.columns = ['similarity','s1']
-    test_df = pd.read_csv(os.path.join(data_path,"test.csv"))
+    test_df = pd.read_csv(os.path.join(data_path,"combined_test.csv"))
     test_df = test_df[['label','sentence']]
     test_df.columns = ['similarity','s1']
-    target_dir = "./data/kaggle_tweets//output/Roberta/"
+    target_dir = "./data/financial_phrasebank//output/Roberta/"
     model_train_validate_test(train_df, dev_df, test_df, target_dir)

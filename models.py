@@ -28,8 +28,8 @@ class BertModel(nn.Module):
 class RobertModel(nn.Module):
     def __init__(self, requires_grad = True):
         super(RobertModel, self).__init__()
-        self.bert = RobertaForSequenceClassification.from_pretrained('roberta-base', num_labels = 2)
-        self.tokenizer = AutoTokenizer.from_pretrained('roberta-base', do_lower_case=True)
+        self.bert = RobertaForSequenceClassification.from_pretrained('roberta-large', num_labels = 3)
+        self.tokenizer = AutoTokenizer.from_pretrained('roberta-large', do_lower_case=True)
         self.requires_grad = requires_grad
         self.device = torch.device("cuda")
         for param in self.bert.parameters():
